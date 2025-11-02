@@ -1,0 +1,27 @@
+# AI Drawing Recognition - Mock Implementation
+
+## Hard Requirement
+Recognize ONLY the 50 preset labels (exact IDs from words_dataset.json)
+
+## MVP Implementation
+Mock function with whitelist and slight randomness
+
+## Code Location
+/src/lib/aiRecognition.ts
+
+## How It Works
+1. Check if target word ID is in whitelist (50 preset words)
+2. If not in whitelist: return { recognized: false, confidence: 0 }
+3. If in whitelist: generate random confidence 0.6-0.9
+4. If confidence > 0.65: recognized = true
+
+## Fallback UX
+When not recognized:
+- Show message: "Nice attempt! Try tracing this outline."
+- Offer trace overlay (SVG)
+- OR offer "picture-select" alternative (skip button)
+
+## Future Enhancement (Post-MVP)
+- Real sketch recognition model (Teachable Machine, TensorFlow.js)
+- Server-side processing
+- On-device ML model
