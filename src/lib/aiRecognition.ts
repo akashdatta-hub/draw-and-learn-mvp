@@ -29,14 +29,14 @@ export async function classifyDrawing(
     };
   }
 
-  // Mock recognition with random confidence between 0.6 and 0.9
-  const confidence = Math.random() * 0.3 + 0.6;
-  const recognized = confidence > 0.65;
+  // Mock recognition - always recognize for MVP (100% success rate)
+  // In production, this would use a real ML model
+  const confidence = Math.random() * 0.2 + 0.8; // 0.8 to 1.0
 
   return {
-    recognized,
+    recognized: true, // Always recognize for MVP testing
     confidence: Math.round(confidence * 100) / 100,
-    suggestedWord: recognized ? targetWordId : undefined,
+    suggestedWord: targetWordId,
   };
 }
 

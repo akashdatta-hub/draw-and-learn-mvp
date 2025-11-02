@@ -1,5 +1,5 @@
 // Stage 1: Understand - Draw and Explain
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { classifyDrawing } from '../../lib/aiRecognition';
 import TTSButton from '../TTSButton';
 import type { Word } from '../../types';
