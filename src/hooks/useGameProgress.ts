@@ -75,12 +75,18 @@ export function useGameProgress(userId: string): GameProgressHook {
 
       const updatedProgress = { ...currentProgress, ...updates };
 
-      // Update local state
+      // Update local state first (optimistic update)
       setProgress((prev) => new Map(prev).set(wordId, updatedProgress));
 
       // Persist to Supabase or localStorage
       try {
         if (isSupabaseConfigured()) {
+          // Ensure user exists in anon_users table first
+          await supabase
+            .from('anon_users')
+            .upsert({ id: userId }, { onConflict: 'id' });
+
+          // Now upsert progress
           const { error: upsertError } = await supabase
             .from('progress')
             .upsert(updatedProgress, { onConflict: 'user_id,word_id' });
@@ -94,7 +100,11 @@ export function useGameProgress(userId: string): GameProgressHook {
         }
       } catch (err) {
         console.error('[Progress Update Error]', err);
-        throw err;
+        // Still continue even if Supabase fails - we have local state
+        // Fallback to localStorage
+        const allProgress = Object.fromEntries(progress.entries());
+        allProgress[wordId] = updatedProgress;
+        localStorage.setItem(`progress_${userId}`, JSON.stringify(allProgress));
       }
     },
     [userId, progress]
