@@ -92,6 +92,20 @@ export function useGameProgress(userId: string): GameProgressHook {
             .upsert(updatedProgress, { onConflict: 'user_id,word_id' });
 
           if (upsertError) throw upsertError;
+
+          // Update leaderboard with total XP
+          const newProgress = new Map(progress);
+          newProgress.set(wordId, updatedProgress);
+          const totalXP = Array.from(newProgress.values()).reduce((sum, p) => sum + p.xp, 0);
+
+          await supabase
+            .from('leaderboard')
+            .upsert({
+              user_id: userId,
+              display_name: 'Anonymous',
+              total_xp: totalXP,
+              updated_at: new Date().toISOString(),
+            }, { onConflict: 'user_id' });
         } else {
           // Fallback to localStorage
           const allProgress = Object.fromEntries(progress.entries());

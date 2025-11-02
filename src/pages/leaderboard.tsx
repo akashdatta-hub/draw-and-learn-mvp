@@ -29,27 +29,36 @@ export default function LeaderboardPage() {
     setLoading(true);
 
     if (!isSupabaseConfigured()) {
-      // Mock data for local development
-      setEntries([
+      // Mock data for local development - show user's actual progress
+      const userXP = getTotalXP();
+      const mockEntries = [
         {
           user_id: '1',
           display_name: 'StarLearner',
-          total_xp: getTotalXP() + 100,
+          total_xp: Math.max(userXP + 100, 200),
           updated_at: new Date().toISOString(),
         },
         {
           user_id: userId,
           display_name: 'You',
-          total_xp: getTotalXP(),
+          total_xp: userXP,
           updated_at: new Date().toISOString(),
         },
         {
           user_id: '2',
           display_name: 'WordMaster',
-          total_xp: getTotalXP() - 50,
+          total_xp: Math.max(userXP - 50, 50),
           updated_at: new Date().toISOString(),
         },
-      ]);
+        {
+          user_id: '3',
+          display_name: 'QuickLearner',
+          total_xp: Math.max(userXP - 80, 20),
+          updated_at: new Date().toISOString(),
+        },
+      ].sort((a, b) => b.total_xp - a.total_xp);
+
+      setEntries(mockEntries);
       setLoading(false);
       return;
     }
