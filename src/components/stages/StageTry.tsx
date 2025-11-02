@@ -1,5 +1,5 @@
 // Stage 2: Try - Fill in the Blank / Telugu Match
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import TTSButton from '../TTSButton';
 import type { Word } from '../../types';
 
@@ -18,11 +18,14 @@ export default function StageTry({ word, onComplete }: Props) {
   const blankSentence = sentence.replace(word.word, '______');
 
   // Generate options (correct answer + 2 distractors)
-  const options = [
-    word.word,
-    'happy',
-    'running',
-  ].sort(() => Math.random() - 0.5);
+  // Memoized to prevent re-shuffling on every render
+  const options = useMemo(() => {
+    return [
+      word.word,
+      'happy',
+      'running',
+    ].sort(() => Math.random() - 0.5);
+  }, [word.word]);
 
   const checkAnswer = () => {
     setShowFeedback(true);
@@ -66,7 +69,7 @@ export default function StageTry({ word, onComplete }: Props) {
 
       <div className="flex justify-center gap-4">
         <button onClick={useHint} className="btn-secondary">
-          =¡ Hint
+          =ï¿½ Hint
         </button>
         <button
           onClick={checkAnswer}
