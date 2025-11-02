@@ -1,5 +1,5 @@
 // Stage 4: Retry - Timed Listening MCQ
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { speakText } from '../../lib/tts';
 import type { Word } from '../../types';
 
@@ -14,8 +14,10 @@ export default function StageRetry({ word, onComplete }: Props) {
   const [showFeedback, setShowFeedback] = useState(false);
   const [timeLeft, setTimeLeft] = useState(10);
 
-  // Generate options
-  const options = [word.word, 'example', 'another'].sort(() => Math.random() - 0.5);
+  // Generate options - memoized to prevent re-shuffling
+  const options = useMemo(() => {
+    return [word.word, 'example', 'another'].sort(() => Math.random() - 0.5);
+  }, [word.word]);
 
   useEffect(() => {
     // Auto-play audio
